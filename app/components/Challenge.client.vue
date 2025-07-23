@@ -19,9 +19,7 @@
       </div>
     </DialogTrigger>
     <DialogPortal>
-      <DialogOverlay
-        class="bg-black/30 fixed inset-0 z-30"
-      />
+      <DialogOverlay class="bg-black/30 fixed inset-0 z-30" />
       <DialogContent
         class="fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none z-[100]"
       >
@@ -29,10 +27,38 @@
           {{ title }}
         </DialogTitle>
         <DialogDescription class="mt-[10px] mb-5">
-          {{  description }}
+          {{ description }}
         </DialogDescription>
-        <wired-input placeholder="plfanzen{hautpeingang}" ref="flagInput" class="w-full" />
-        {{ flag }}
+        <form>
+          <wired-input
+            placeholder="plfanzen{hautpeingang}"
+            ref="flagInput"
+            class="w-full"
+            v-model="flag"
+            @keyup="showFlagStatus = false"
+            @keydown.enter="checkFlag"
+          />
+          <wired-button @click="checkFlag" class="mt-4 w-full">
+            Submit Falg
+          </wired-button>
+        </form>
+
+        <wired-card
+          class="w-full mt-4 text-center text-white"
+          elevation="3"
+          v-if="showFlagStatus && isFlagCorrect"
+          fill="#4CAF50"
+        >
+          <p>Correct flag</p>
+        </wired-card>
+        <wired-card
+          class="w-full mt-4 text-center text-white"
+          elevation="3"
+          v-else-if="showFlagStatus && !isFlagCorrect"
+          fill="#F44336"
+        >
+          <p>Incorrect flag</p>
+        </wired-card>
       </DialogContent>
     </DialogPortal>
   </DialogRoot>
@@ -65,6 +91,10 @@ const props = defineProps({
   description: {
     type: String,
     default: "No description provided",
+  },
+  flag: {
+    type: String,
+    optional: true,
   },
 });
 
@@ -119,4 +149,17 @@ watch(
     drawSketch();
   }
 );
+
+const showFlagStatus = ref(false);
+const isFlagCorrect = ref(false);
+
+const checkFlag = () => {
+  console.log("Checking flag:", flag.value);
+  if (flag.value === props.flag) {
+    isFlagCorrect.value = true;
+  } else {
+    isFlagCorrect.value = false;
+  }
+  showFlagStatus.value = true;
+};
 </script>
