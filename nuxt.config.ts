@@ -14,4 +14,14 @@ export default defineNuxtConfig({
       },
     },
   },
+  nitro: {
+    moduleSideEffects: ["wired-elements"]
+  },
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag) => {
+        return tag.startsWith("wired-");
+      }
+    }
+  }
 });
