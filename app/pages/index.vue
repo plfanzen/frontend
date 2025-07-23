@@ -56,7 +56,7 @@ const categories = [
   },
   {
     title: "foresnic",
-    color: "#8a2be2",
+    color: "#2f4f4f",
     challenges: [
       { title: "foresnic 1", points: 1000, description: "Here's a memroy dmup from my 2PiB RAM server. Find the flag in there." },
       // Doing client-side flags now for testing
