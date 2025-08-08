@@ -18,12 +18,10 @@
               <wired-input 
                 placeholder="Tema nam"
                 class="w-full"
-                v-model="newTeamName"
               />
               <wired-input 
                 placeholder="Descriptn (optinal)"
                 class="w-full"
-                v-model="newTeamDescription"
               />
               <wired-button @click="createTeam" class="w-full">
                 Crat Tema
@@ -38,7 +36,6 @@
               <wired-input 
                 placeholder="Tema invt cod"
                 class="w-full"
-                v-model="inviteCode"
               />
               <wired-button @click="joinTeam" class="w-full">
                 Joi Tema
@@ -140,10 +137,6 @@
 <script setup>
 import "wired-elements";
 import { ref, computed } from "vue";
-
-const newTeamName = ref("");
-const newTeamDescription = ref("");
-const inviteCode = ref("");
 
 // Example user team data (null if no team)
 const userTeam = ref({

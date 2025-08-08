@@ -3,18 +3,9 @@
     <h1 class="text-4xl font-bold mb-8 text-gray-800 text-center">Hlp & FAQ</h1>
     
     <div class="space-y-6">
-      <!-- Search Box -->
-      <div class="mb-8">
-        <wired-input 
-          placeholder="Serch for hlp..."
-          class="w-full"
-          v-model="searchQuery"
-        />
-      </div>
-      
       <!-- FAQ Sections -->
       <div class="space-y-4">
-        <div v-for="(section, sectionIndex) in filteredFAQ" :key="sectionIndex">
+        <div v-for="(section, sectionIndex) in faq" :key="sectionIndex">
           <h2 class="text-2xl font-bold mb-4" :style="{ color: section.color }">
             {{ section.title }}
           </h2>
@@ -65,9 +56,7 @@
 
 <script setup>
 import "wired-elements";
-import { ref, computed } from "vue";
-
-const searchQuery = ref("");
+import { ref } from "vue";
 
 const faqData = [
   {
@@ -157,20 +146,6 @@ const faqData = [
 ];
 
 const faq = ref(faqData);
-
-const filteredFAQ = computed(() => {
-  if (!searchQuery.value.trim()) {
-    return faq.value;
-  }
-  
-  return faq.value.map(section => ({
-    ...section,
-    questions: section.questions.filter(q => 
-      q.question.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      q.answer.toLowerCase().includes(searchQuery.value.toLowerCase())
-    )
-  })).filter(section => section.questions.length > 0);
-});
 
 const toggleQuestion = (sectionIndex, questionIndex) => {
   faq.value[sectionIndex].questions[questionIndex].isOpen = 
