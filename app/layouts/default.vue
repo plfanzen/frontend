@@ -18,6 +18,18 @@
         <NuxtLink to="/puntkebertt" class="text-gray-600 hover:text-gray-800"
           >Puntkebertt</NuxtLink
         >
+        <NuxtLink to="/temas" class="text-gray-600 hover:text-gray-800"
+          >Temas</NuxtLink
+        >
+        <NuxtLink to="/regls" class="text-gray-600 hover:text-gray-800"
+          >Regls</NuxtLink
+        >
+        <NuxtLink to="/hlp" class="text-gray-600 hover:text-gray-800"
+          >Hlp</NuxtLink
+        >
+        <NuxtLink to="/profil" class="text-gray-600 hover:text-gray-800"
+          >Profil</NuxtLink
+        >
         <NuxtLink
           to="/hautpeingang"
           class="text-gray-600 hover:text-gray-800 ml-auto"
