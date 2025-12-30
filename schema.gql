@@ -1,0 +1,100 @@
+enum ConnectionProtocol {
+  TCP_TLS
+  HTTPS
+  UDP
+  SSH
+  TCP
+}
+
+enum InstanceState {
+  CREATING
+  RUNNING
+}
+
+type CtfCategory {
+  id: String!
+  name: String!
+  description: String
+  color: String
+}
+
+type CtfChallengeConnectionInfo {
+  host: String!
+  port: Int!
+  protocol: ConnectionProtocol!
+}
+
+type CtfChallengeMetadata {
+  id: String!
+  name: String!
+  authors: [String!]!
+  descriptionMd: String!
+  categories: [String!]!
+  difficulty: String!
+  attachments: [String!]!
+  releaseTime: Int
+  endTime: Int
+  points: Int!
+  instance: InstanceStatus
+  solved: Boolean!
+  solves: Int!
+}
+
+type CtfDifficulty {
+  id: String!
+  name: String!
+  color: String
+}
+
+type EventConfig {
+  eventName: String!
+  frontPageMd: String!
+  rulesMd: String!
+  startTime: Int!
+  endTime: Int!
+  useTeams: Boolean!
+  registrationStartTime: Int
+  registrationEndTime: Int
+  maxTeamSize: Int
+  scoreboardFreezeTime: Int
+  categories: [CtfCategory!]!
+  difficulties: [CtfDifficulty!]!
+}
+
+type InstanceStatus {
+  state: InstanceState!
+  connectionInfo: [CtfChallengeConnectionInfo!]!
+}
+
+type Mutation {
+  login(username: String!, password: String!): SessionCredentials!
+  createUser(username: String!, email: String!, password: String!): Boolean!
+  refreshSession(refreshToken: String!): SessionCredentials!
+  endSession(refreshToken: String!): Boolean!
+  syncRepo: Boolean!
+  launchChallengeInstance(challengeId: String!): Boolean!
+  stopChallengeInstance(challengeId: String!): Boolean!
+
+  # Returns the ID of the solved challenge if the flag is correct, or null otherwise.
+  submitFlag(challengeId: String!, flag: String!): String
+}
+
+type Query {
+  isAuthenticated: Boolean!
+  syncStatus: SyncStatus!
+  eventConfig: EventConfig!
+  challenges: [CtfChallengeMetadata!]!
+}
+
+type SessionCredentials {
+  refreshToken: String!
+  accessToken: String!
+}
+
+type SyncStatus {
+  commitHash: String
+  commitTimestamp: Int
+  commitAuthor: String
+  commitTitle: String
+  isSynced: Boolean!
+}

@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: 2024-2025 The n5i project
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+schema: schema.gql
+documents: [./app/**/*.vue]
+generates:
+  ./app/utils/gql/:
+    preset: client
+    plugins:
+      - add: { content: '// This file is generated automatically. DO NOT EDIT IT MANUALLY.' }
+      - add: { content: '/* eslint-disable */' }
+    config:
+      useTypeImports: true
+      gqlTagName: gql
+      scalars:
+        JSON: 'any'
+        JSONObject: '{ [key: string]: any }'
+        MultiLanguageItem: "Record<string, string>"
+        Settings: "Record<string, Setting>"
+
+hooks:
+  afterAllFileWrite:
+    - prettier --write

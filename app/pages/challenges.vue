@@ -1,0 +1,135 @@
+<template>
+  <div class="flex flex-col p-4">
+    <ClientOnly>
+      <wired-checkbox @change="handleCheckboxChange">
+        Hide Solved Challenges
+      </wired-checkbox>
+    </ClientOnly>
+    <div v-for="category in categories" :key="category.id" class="mb-8">
+      <h3 class="text-2xl font-bold mb-4" :style="{ color: category.color }">
+        {{ category.name }}
+      </h3>
+      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+        <Challenge
+          v-for="challenge in category.challenges"
+          :challengeId="challenge.id"
+          :key="challenge.name"
+          :title="challenge.name"
+          :points="challenge.points"
+          :backgroundColor="category.color"
+          :description="challenge.descriptionMd"
+          :difficulty="difficultiesMap[challenge.difficulty]?.name"
+          :difficultyColor="difficultiesMap[challenge.difficulty]?.color"
+          :instanceInfo="challenge.instance"
+          :solves="challenge.solves"
+          :solved="challenge.solved"
+          class="max-w-sm"
+          @launch="refresh"
+          @stop="refresh"
+        />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { graphql } from "~/utils/gql";
+
+const hideSolved = ref(false);
+
+const challsInfoQuery = graphql(`
+  query getChallengesInfo {
+    challenges {
+      id
+      name
+      authors
+      descriptionMd
+      points
+      categories
+      difficulty
+      solved
+      solves
+      instance {
+        state
+        connectionInfo {
+          port
+          host
+          protocol
+        }
+      }
+    }
+    eventConfig {
+      categories {
+        name
+        id
+        color
+        description
+      }
+      difficulties {
+        name
+        id
+        color
+      }
+    }
+  }
+`);
+
+const { data: challsInfo, refresh } = await useAsyncQuery(challsInfoQuery);
+
+const shownChallenges = computed(() => {
+  if (!challsInfo.value) return [];
+
+  if (hideSolved.value) {
+    return challsInfo.value.challenges.filter(
+      (challenge: any) => !challenge.solved
+    );
+  }
+  return challsInfo.value.challenges;
+});
+
+const categories = computed(() => {
+  if (!shownChallenges.value || !challsInfo.value) return [];
+
+  const challengesByCategory: Record<string, any[]> = {};
+  shownChallenges.value.forEach((challenge: any) => {
+    challenge.categories.forEach((categoryId: string) => {
+      if (!challengesByCategory[categoryId]) {
+        challengesByCategory[categoryId] = [];
+      }
+      challengesByCategory[categoryId].push(challenge);
+    });
+  });
+
+  return challsInfo.value.eventConfig.categories
+    .filter((cat: any) => (challengesByCategory[cat.id]?.length || 0) > 0)
+    .map((cat: any) => ({
+      ...cat,
+      challenges: challengesByCategory[cat.id] || [],
+    }));
+});
+
+const interval = ref<null | number>(null);
+onMounted(() => {
+  interval.value = window.setInterval(() => {
+    refresh();
+  }, 5000);
+});
+
+onBeforeUnmount(() => {
+  if (interval.value) {
+    clearInterval(interval.value);
+  }
+});
+
+const difficultiesMap = computed(() => {
+  const map: Record<string, { name: string; color: string }> = {};
+  challsInfo.value?.eventConfig.difficulties.forEach((diff: any) => {
+    map[diff.id] = { name: diff.name, color: diff.color };
+  });
+  return map;
+});
+
+function handleCheckboxChange(newVal: any) {
+  hideSolved.value = newVal?.detail.checked;
+}
+</script>
