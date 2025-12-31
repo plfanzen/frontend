@@ -93,7 +93,6 @@ ncat {{ info.host }} {{ info.port }}</pre
           placeholder="plfanzen{hautpeingang}"
           ref="flagInput"
           class="w-full"
-          v-model="flag"
           @keyup="showFlagStatus = false"
           @keydown.enter="checkFlagWithServer"
         />
@@ -139,7 +138,7 @@ import { graphql } from "~/utils/gql";
 import rough from "roughjs/bundled/rough.esm.js";
 import { ConnectionProtocol } from "~/utils/gql/graphql";
 
-const flag = ref("");
+const flagInput = ref<HTMLElement | null>(null);
 const dialog = ref<HTMLDialogElement | null>(null);
 
 async function openDialog() {
@@ -312,7 +311,7 @@ async function checkFlagWithServer() {
   const { data } =
     (await submitFlag({
       challengeId: props.challengeId!,
-      flag: flag.value,
+      flag: flagInput.value?.value || "",
     })) || {};
   if (data?.submitFlag) {
     validFlagFor.value = data?.submitFlag;
