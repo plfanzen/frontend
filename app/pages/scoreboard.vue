@@ -23,4 +23,23 @@ const solvesQuery = graphql(`
 `);
 
 const { data: solvesInfo } = await useAsyncQuery(solvesQuery);
+
+const infoBySolveActor = computed(() => {
+  if (!solvesInfo.value) return {};
+
+  const result: Record<string, any> = {};
+  for (const user of solvesInfo.value.users) {
+    for (const solve of user.solves) {
+      if (!result[solve.actor]) {
+        result[solve.actor] = [];
+      }
+      result[solve.actor].push({
+        username: user.username,
+        points: solve.challenge.points,
+        solvedAt: solve.solvedAt,
+      });
+    }
+  }
+  return result;
+});
 </script>
