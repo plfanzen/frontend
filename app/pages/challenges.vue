@@ -7,7 +7,7 @@
     </ClientOnly>
     <div v-if="categories.length === 0" class="mt-8 text-center text-gray-600">
       <span v-if="hideSolved && hasSolved"
-        >All challenges solved! This wasn't supposed to be possible...</span>
+        >All challenges solved! Congratulations!</span>
       <span v-else>No challenges available at the moment.</span>
     </div>
     <div v-for="category in categories" :key="category.id" class="mb-8">
