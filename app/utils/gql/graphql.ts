@@ -57,6 +57,7 @@ export type CtfChallengeMetadata = {
   __typename?: "CtfChallengeMetadata";
   attachments: Array<Scalars["String"]["output"]>;
   authors: Array<Scalars["String"]["output"]>;
+  canStart: Scalars["Boolean"]["output"];
   categories: Array<Scalars["String"]["output"]>;
   descriptionMd: Scalars["String"]["output"];
   difficulty: Scalars["String"]["output"];
@@ -102,6 +103,14 @@ export type InstanceStatus = {
   __typename?: "InstanceStatus";
   connectionInfo: Array<CtfChallengeConnectionInfo>;
   state: InstanceState;
+};
+
+export type InvalidSubmission = {
+  __typename?: "InvalidSubmission";
+  challengeId: Scalars["String"]["output"];
+  submittedAt: Scalars["String"]["output"];
+  submittedFlag: Scalars["String"]["output"];
+  user: User;
 };
 
 export type Mutation = {
@@ -153,13 +162,31 @@ export type Query = {
   challenges: Array<CtfChallengeMetadata>;
   eventConfig: EventConfig;
   isAuthenticated: Scalars["Boolean"]["output"];
+  me?: Maybe<User>;
+  solves: Array<Solve>;
   syncStatus: SyncStatus;
+  userById?: Maybe<User>;
+  users: Array<User>;
+};
+
+export type QueryUserByIdArgs = {
+  userId: Scalars["String"]["input"];
 };
 
 export type SessionCredentials = {
   __typename?: "SessionCredentials";
   accessToken: Scalars["String"]["output"];
   refreshToken: Scalars["String"]["output"];
+};
+
+export type Solve = {
+  __typename?: "Solve";
+  actor: Scalars["String"]["output"];
+  challenge: CtfChallengeMetadata;
+  challengeId: Scalars["String"]["output"];
+  solvedAt: Scalars["String"]["output"];
+  submittedFlag: Scalars["String"]["output"];
+  user: User;
 };
 
 export type SyncStatus = {
@@ -170,6 +197,25 @@ export type SyncStatus = {
   commitTitle?: Maybe<Scalars["String"]["output"]>;
   isSynced: Scalars["Boolean"]["output"];
 };
+
+export type User = {
+  __typename?: "User";
+  actor: Scalars["String"]["output"];
+  email: Scalars["String"]["output"];
+  id: Scalars["String"]["output"];
+  invalidSubmissions: Array<InvalidSubmission>;
+  invalidSubmissionsCount: Scalars["Int"]["output"];
+  role: UserRole;
+  solves: Array<Solve>;
+  solvesCount: Scalars["Int"]["output"];
+  username: Scalars["String"]["output"];
+};
+
+export enum UserRole {
+  Admin = "ADMIN",
+  Author = "AUTHOR",
+  Player = "PLAYER",
+}
 
 export type LaunchChallengeInstanceMutationVariables = Exact<{
   challengeId: Scalars["String"]["input"];
@@ -324,6 +370,23 @@ export type GetRulesMdQueryVariables = Exact<{ [key: string]: never }>;
 export type GetRulesMdQuery = {
   __typename?: "Query";
   eventConfig: { __typename?: "EventConfig"; rulesMd: string };
+};
+
+export type GetAllSolvesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetAllSolvesQuery = {
+  __typename?: "Query";
+  solves: Array<{
+    __typename?: "Solve";
+    solvedAt: string;
+    user: { __typename?: "User"; username: string };
+    challenge: {
+      __typename?: "CtfChallengeMetadata";
+      points: number;
+      id: string;
+      name: string;
+    };
+  }>;
 };
 
 export const LaunchChallengeInstanceDocument = {
@@ -991,3 +1054,56 @@ export const GetRulesMdDocument = {
     },
   ],
 } as unknown as DocumentNode<GetRulesMdQuery, GetRulesMdQueryVariables>;
+export const GetAllSolvesDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "getAllSolves" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "solves" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "solvedAt" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "user" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "username" },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "challenge" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "points" },
+                      },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetAllSolvesQuery, GetAllSolvesQueryVariables>;

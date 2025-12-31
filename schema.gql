@@ -11,6 +11,12 @@ enum InstanceState {
   RUNNING
 }
 
+enum UserRole {
+  PLAYER
+  AUTHOR
+  ADMIN
+}
+
 type CtfCategory {
   id: String!
   name: String!
@@ -35,6 +41,7 @@ type CtfChallengeMetadata {
   releaseTime: Int
   endTime: Int
   points: Int!
+  canStart: Boolean!
   instance: InstanceStatus
   solved: Boolean!
   solves: Int!
@@ -66,6 +73,13 @@ type InstanceStatus {
   connectionInfo: [CtfChallengeConnectionInfo!]!
 }
 
+type InvalidSubmission {
+  challengeId: String!
+  submittedFlag: String!
+  submittedAt: String!
+  user: User!
+}
+
 type Mutation {
   login(username: String!, password: String!): SessionCredentials!
   createUser(username: String!, email: String!, password: String!): Boolean!
@@ -84,11 +98,24 @@ type Query {
   syncStatus: SyncStatus!
   eventConfig: EventConfig!
   challenges: [CtfChallengeMetadata!]!
+  users: [User!]!
+  me: User
+  userById(userId: String!): User
+  solves: [Solve!]!
 }
 
 type SessionCredentials {
   refreshToken: String!
   accessToken: String!
+}
+
+type Solve {
+  challengeId: String!
+  submittedFlag: String!
+  solvedAt: String!
+  user: User!
+  actor: String!
+  challenge: CtfChallengeMetadata!
 }
 
 type SyncStatus {
@@ -97,4 +124,16 @@ type SyncStatus {
   commitAuthor: String
   commitTitle: String
   isSynced: Boolean!
+}
+
+type User {
+  id: String!
+  username: String!
+  email: String!
+  role: UserRole!
+  invalidSubmissionsCount: Int!
+  solvesCount: Int!
+  invalidSubmissions: [InvalidSubmission!]!
+  solves: [Solve!]!
+  actor: String!
 }
