@@ -13,7 +13,7 @@
         <Challenge
           v-for="challenge in category.challenges"
           :challengeId="challenge.id"
-          :key="challenge.name"
+          :key="challenge.id"
           :title="challenge.name"
           :points="challenge.points"
           :backgroundColor="category.color"
@@ -104,7 +104,11 @@ const categories = computed(() => {
     .filter((cat: any) => (challengesByCategory[cat.id]?.length || 0) > 0)
     .map((cat: any) => ({
       ...cat,
-      challenges: challengesByCategory[cat.id] || [],
+      challenges: challengesByCategory[cat.id]?.toSorted((a, b) =>
+        a.points !== b.points
+          ? b.points - a.points
+          : a.name.localeCompare(b.name)
+      ) || [],
     }));
 });
 
