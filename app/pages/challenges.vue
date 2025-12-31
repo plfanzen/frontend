@@ -5,6 +5,11 @@
         Hide Solved Challenges
       </wired-checkbox>
     </ClientOnly>
+    <div v-if="categories.length === 0" class="mt-8 text-center text-gray-600">
+      <span v-if="hideSolved && hasSolved"
+        >All challenges solved! This wasn't supposed to be possible...</span>
+      <span v-else>No challenges available at the moment.</span>
+    </div>
     <div v-for="category in categories" :key="category.id" class="mb-8">
       <h3 class="text-2xl font-bold mb-4" :style="{ color: category.color }">
         {{ category.name }}
@@ -85,6 +90,14 @@ const shownChallenges = computed(() => {
     );
   }
   return challsInfo.value.challenges;
+});
+
+const hasSolved = computed(() => {
+  if (!challsInfo.value) return false;
+
+  return challsInfo.value.challenges.some(
+    (challenge: any) => challenge.solved
+  );
 });
 
 const categories = computed(() => {
