@@ -60,7 +60,6 @@
 </template>
 
 <script setup lang="ts">
-import "wired-elements";
 import { graphql } from "~/utils/gql";
 
 const refreshToken = useCookie("refreshToken");
@@ -159,13 +158,14 @@ async function endSession() {
 await refreshSession();
 
 const interval = ref<number | null>(null);
-onMounted(() => {
+onMounted(async () => {
   interval.value = window.setInterval(
     () => {
       refreshSession();
     },
     5 * 60 * 1000
   ); // Refresh every 5 minutes
+  await import("wired-elements")
 });
 
 onBeforeUnmount(() => {
