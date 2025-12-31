@@ -60,6 +60,7 @@
 </template>
 
 <script setup lang="ts">
+import "wired-elements";
 import { graphql } from "~/utils/gql";
 
 const refreshToken = useCookie("refreshToken");

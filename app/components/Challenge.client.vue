@@ -134,7 +134,6 @@ ncat {{ info.host }} {{ info.port }}</pre
 </template>
 
 <script setup lang="ts">
-import "wired-elements";
 import { onMounted, ref, watch } from "vue";
 import { graphql } from "~/utils/gql";
 import rough from "roughjs/bundled/rough.esm.js";
