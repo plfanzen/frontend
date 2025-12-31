@@ -376,16 +376,15 @@ export type GetAllSolvesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetAllSolvesQuery = {
   __typename?: "Query";
-  solves: Array<{
-    __typename?: "Solve";
-    solvedAt: string;
-    user: { __typename?: "User"; username: string };
-    challenge: {
-      __typename?: "CtfChallengeMetadata";
-      points: number;
-      id: string;
-      name: string;
-    };
+  users: Array<{
+    __typename?: "User";
+    username: string;
+    solves: Array<{
+      __typename?: "Solve";
+      actor: string;
+      solvedAt: string;
+      challenge: { __typename?: "CtfChallengeMetadata"; points: number };
+    }>;
   }>;
 };
 
@@ -1066,36 +1065,35 @@ export const GetAllSolvesDocument = {
         selections: [
           {
             kind: "Field",
-            name: { kind: "Name", value: "solves" },
+            name: { kind: "Name", value: "users" },
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "solvedAt" } },
+                { kind: "Field", name: { kind: "Name", value: "username" } },
                 {
                   kind: "Field",
-                  name: { kind: "Name", value: "user" },
+                  name: { kind: "Name", value: "solves" },
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
                       {
                         kind: "Field",
-                        name: { kind: "Name", value: "username" },
+                        name: { kind: "Name", value: "challenge" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "points" },
+                            },
+                          ],
+                        },
                       },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "challenge" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "actor" } },
                       {
                         kind: "Field",
-                        name: { kind: "Name", value: "points" },
+                        name: { kind: "Name", value: "solvedAt" },
                       },
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
                     ],
                   },
                 },

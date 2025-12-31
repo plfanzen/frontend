@@ -9,15 +9,14 @@ import { graphql } from "~/utils/gql";
 
 const solvesQuery = graphql(`
   query getAllSolves {
-    solves {
-      solvedAt
-      user {
-        username
-      }
-      challenge {
-        points
-        id
-        name
+    users {
+      username
+      solves {
+        challenge {
+          points
+        }
+        actor
+        solvedAt
       }
     }
   }
