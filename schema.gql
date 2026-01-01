@@ -91,6 +91,11 @@ type Mutation {
 
   # Returns the ID of the solved challenge if the flag is correct, or null otherwise.
   submitFlag(challengeId: String!, flag: String!): String
+  joinTeamWithCode(joinCodeInput: String!): Team!
+  createTeam(name: String!, slug: String!, createJoinCode: Boolean!): Team!
+  leaveTeam: Boolean!
+  enableJoinCode: String!
+  disableJoinCode: Boolean!
 }
 
 type Query {
@@ -102,6 +107,7 @@ type Query {
   me: User
   userById(userId: String!): User
   solves: [Solve!]!
+  teams: [Team!]!
 }
 
 type SessionCredentials {
@@ -124,6 +130,14 @@ type SyncStatus {
   commitAuthor: String
   commitTitle: String
   isSynced: Boolean!
+}
+
+type Team {
+  id: String!
+  name: String!
+  slug: String!
+  joinCode: String
+  members: [User!]!
 }
 
 type User {

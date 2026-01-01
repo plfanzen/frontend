@@ -115,14 +115,25 @@ export type InvalidSubmission = {
 
 export type Mutation = {
   __typename?: "Mutation";
+  createTeam: Team;
   createUser: Scalars["Boolean"]["output"];
+  disableJoinCode: Scalars["Boolean"]["output"];
+  enableJoinCode: Scalars["String"]["output"];
   endSession: Scalars["Boolean"]["output"];
+  joinTeamWithCode: Team;
   launchChallengeInstance: Scalars["Boolean"]["output"];
+  leaveTeam: Scalars["Boolean"]["output"];
   login: SessionCredentials;
   refreshSession: SessionCredentials;
   stopChallengeInstance: Scalars["Boolean"]["output"];
   submitFlag?: Maybe<Scalars["String"]["output"]>;
   syncRepo: Scalars["Boolean"]["output"];
+};
+
+export type MutationCreateTeamArgs = {
+  createJoinCode: Scalars["Boolean"]["input"];
+  name: Scalars["String"]["input"];
+  slug: Scalars["String"]["input"];
 };
 
 export type MutationCreateUserArgs = {
@@ -133,6 +144,10 @@ export type MutationCreateUserArgs = {
 
 export type MutationEndSessionArgs = {
   refreshToken: Scalars["String"]["input"];
+};
+
+export type MutationJoinTeamWithCodeArgs = {
+  joinCodeInput: Scalars["String"]["input"];
 };
 
 export type MutationLaunchChallengeInstanceArgs = {
@@ -165,6 +180,7 @@ export type Query = {
   me?: Maybe<User>;
   solves: Array<Solve>;
   syncStatus: SyncStatus;
+  teams: Array<Team>;
   userById?: Maybe<User>;
   users: Array<User>;
 };
@@ -196,6 +212,15 @@ export type SyncStatus = {
   commitTimestamp?: Maybe<Scalars["Int"]["output"]>;
   commitTitle?: Maybe<Scalars["String"]["output"]>;
   isSynced: Scalars["Boolean"]["output"];
+};
+
+export type Team = {
+  __typename?: "Team";
+  id: Scalars["String"]["output"];
+  joinCode?: Maybe<Scalars["String"]["output"]>;
+  members: Array<User>;
+  name: Scalars["String"]["output"];
+  slug: Scalars["String"]["output"];
 };
 
 export type User = {
