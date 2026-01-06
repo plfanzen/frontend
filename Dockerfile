@@ -13,6 +13,7 @@ RUN bun install
 
 ENV GRAPHQL_ENDPOINT_SERVER http://api:3000/graphql
 ENV GRAPHQL_ENDPOINT_CLIENT /api/graphql
+ENV BROWSER_API_BASE_URL /api
 ENV WS_ENDPOINT /api/graphql
 
 RUN NITRO_PRESET=node_cluster node node_modules/.bin/nuxi build

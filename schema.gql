@@ -44,6 +44,9 @@ type CtfChallengeMetadata {
   canStart: Boolean!
   instance: InstanceStatus
   solved: Boolean!
+
+  # Whether the challenge source code can be exported by the user
+  canExport: Boolean!
   solves: Int!
 }
 

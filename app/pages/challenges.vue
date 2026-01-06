@@ -28,6 +28,9 @@
           :instanceInfo="challenge.instance"
           :solves="challenge.solves"
           :solved="challenge.solved"
+          :attachments="challenge.attachments"
+          :canExport="challenge.canExport"
+          :canStart="challenge.canStart"
           class="max-w-sm"
           @launch="refresh"
           @stop="refresh"
@@ -54,6 +57,9 @@ const challsInfoQuery = graphql(`
       difficulty
       solved
       solves
+      canExport
+      canStart
+      attachments
       instance {
         state
         connectionInfo {

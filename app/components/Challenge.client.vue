@@ -34,11 +34,30 @@
       </h2>
       <div class="mt-[10px] mb-5">
         <MDC :value="description" tag="div" />
+        <!-- Download buttons for attachments that call downloadAttachment -->
+        <div v-if="attachments && attachments.length > 0" class="mt-4">
+          <h3 class="font-semibold mb-2">Attachments:</h3>
+          <div class="flex flex-col gap-2">
+            <wired-button
+              v-for="(attachment, index) in attachments"
+              :key="index"
+              @click="downloadAttachment(attachment)"
+              class="w-full"
+            >
+              {{ attachment }}
+            </wired-button>
+          </div>
+        </div>
+        <div v-if="canExport" class="mt-4">
+          <wired-button @click="downloadSrc" class="w-full">
+            Download Source Code
+          </wired-button>
+        </div>
         <wired-button
           @click="launchInstance"
           class="mt-4 w-full"
           fill="#2196F3"
-          v-if="!instanceInfo"
+          v-if="!instanceInfo && canStart"
         >
           Launch
         </wired-button>
@@ -46,7 +65,7 @@
           @click="stopInstance"
           class="mt-4 w-full"
           fill="#F44336"
-          v-else
+          v-else-if="instanceInfo"
         >
           Stop
         </wired-button>
@@ -145,15 +164,20 @@ async function openDialog() {
   if (dialog.value && !dialog.value.open) {
     dialog.value.open = true;
     while (dialog.value.open) {
-      dialog.value.shadowRoot?.querySelector("#overlay")?.addEventListener("click", () => {
-        dialog.value!.open = false;
-      });
+      dialog.value.shadowRoot
+        ?.querySelector("#overlay")
+        ?.addEventListener("click", () => {
+          dialog.value!.open = false;
+        });
       dialog.value.shadowRoot
         ?.querySelector("#overlay wired-card")
         ?.addEventListener("click", (e) => {
           e.stopPropagation();
         });
-      if (dialog.value.shadowRoot?.querySelector("#overlay") == null || dialog.value.shadowRoot?.querySelector("#overlay wired-card") == null) {
+      if (
+        dialog.value.shadowRoot?.querySelector("#overlay") == null ||
+        dialog.value.shadowRoot?.querySelector("#overlay wired-card") == null
+      ) {
         console.warn("Dialog overlay not found, retrying...");
       } else {
         break;
@@ -206,6 +230,18 @@ const props = defineProps({
   },
   solves: {
     type: Number,
+    optional: true,
+  },
+  canExport: {
+    type: Boolean,
+    optional: true,
+  },
+  canStart: {
+    type: Boolean,
+    optional: true,
+  },
+  attachments: {
+    type: Array as PropType<string[]>,
     optional: true,
   },
 });
@@ -319,5 +355,58 @@ async function checkFlagWithServer() {
     validFlagFor.value = null;
   }
   showFlagStatus.value = true;
+}
+
+const { getToken } = useApollo();
+const runtimeConfig = useRuntimeConfig();
+
+async function downloadSrc() {
+  const token = await getToken();
+  const response = await fetch(`${runtimeConfig.public.browserApiBaseUrl}/export-challenge/${props.challengeId}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!response.ok) {
+    alert("Failed to download source code.");
+    return;
+  }
+  const blob = await response.blob();
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${props.challengeId}.tar.gz`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.URL.revokeObjectURL(url);
+}
+
+
+async function downloadAttachment(attachmentName: string) {
+  const token = await getToken();
+  const response = await fetch(
+    `${runtimeConfig.public.browserApiBaseUrl}/retrieve-file/${props.challengeId}/${attachmentName}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  if (!response.ok) {
+    alert("Failed to download attachment.");
+    return;
+  }
+  const blob = await response.blob();
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = attachmentName;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.URL.revokeObjectURL(url);
 }
 </script>

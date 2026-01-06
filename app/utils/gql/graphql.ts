@@ -57,6 +57,7 @@ export type CtfChallengeMetadata = {
   __typename?: "CtfChallengeMetadata";
   attachments: Array<Scalars["String"]["output"]>;
   authors: Array<Scalars["String"]["output"]>;
+  canExport: Scalars["Boolean"]["output"];
   canStart: Scalars["Boolean"]["output"];
   categories: Array<Scalars["String"]["output"]>;
   descriptionMd: Scalars["String"]["output"];
@@ -332,6 +333,9 @@ export type GetChallengesInfoQuery = {
     difficulty: string;
     solved: boolean;
     solves: number;
+    canExport: boolean;
+    canStart: boolean;
+    attachments: Array<string>;
     instance?: {
       __typename?: "InstanceStatus";
       state: InstanceState;
@@ -783,6 +787,9 @@ export const GetChallengesInfoDocument = {
                 { kind: "Field", name: { kind: "Name", value: "difficulty" } },
                 { kind: "Field", name: { kind: "Name", value: "solved" } },
                 { kind: "Field", name: { kind: "Name", value: "solves" } },
+                { kind: "Field", name: { kind: "Name", value: "canExport" } },
+                { kind: "Field", name: { kind: "Name", value: "canStart" } },
+                { kind: "Field", name: { kind: "Name", value: "attachments" } },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "instance" },

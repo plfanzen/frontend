@@ -75,4 +75,10 @@ export default defineNuxtConfig({
       secure: false,
     },
   },
+
+  runtimeConfig: {
+    public: {
+      browserApiBaseUrl: process.env.BROWSER_API_BASE_URL || "http://127.0.0.1:3000",
+    },
+  },
 });
