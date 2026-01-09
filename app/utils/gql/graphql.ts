@@ -202,7 +202,6 @@ export type SessionCredentials = {
 
 export type Solve = {
   __typename?: "Solve";
-  actor: Scalars["String"]["output"];
   challenge: CtfChallengeMetadata;
   challengeId: Scalars["String"]["output"];
   solvedAt: Scalars["String"]["output"];
@@ -414,11 +413,15 @@ export type GetAllSolvesQuery = {
   users: Array<{
     __typename?: "User";
     username: string;
+    actor: string;
     solves: Array<{
       __typename?: "Solve";
-      actor: string;
       solvedAt: string;
-      challenge: { __typename?: "CtfChallengeMetadata"; points: number };
+      challenge: {
+        __typename?: "CtfChallengeMetadata";
+        points: number;
+        solves: number;
+      };
     }>;
   }>;
 };
@@ -1116,6 +1119,7 @@ export const GetAllSolvesDocument = {
               kind: "SelectionSet",
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "username" } },
+                { kind: "Field", name: { kind: "Name", value: "actor" } },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "solves" },
@@ -1132,10 +1136,13 @@ export const GetAllSolvesDocument = {
                               kind: "Field",
                               name: { kind: "Name", value: "points" },
                             },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "solves" },
+                            },
                           ],
                         },
                       },
-                      { kind: "Field", name: { kind: "Name", value: "actor" } },
                       {
                         kind: "Field",
                         name: { kind: "Name", value: "solvedAt" },

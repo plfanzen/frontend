@@ -128,7 +128,6 @@ type Solve {
   submittedFlag: String!
   solvedAt: String!
   user: User!
-  actor: String!
   challenge: CtfChallengeMetadata!
 }
 

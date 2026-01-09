@@ -11,11 +11,12 @@ const solvesQuery = graphql(`
   query getAllSolves {
     users {
       username
+      actor
       solves {
         challenge {
           points
+          solves
         }
-        actor
         solvedAt
       }
     }
@@ -30,10 +31,10 @@ const infoBySolveActor = computed(() => {
   const result: Record<string, any> = {};
   for (const user of solvesInfo.value.users) {
     for (const solve of user.solves) {
-      if (!result[solve.actor]) {
-        result[solve.actor] = [];
+      if (!result[user.actor]) {
+        result[user.actor] = [];
       }
-      result[solve.actor].push({
+      result[user.actor].push({
         username: user.username,
         points: solve.challenge.points,
         solvedAt: solve.solvedAt,
