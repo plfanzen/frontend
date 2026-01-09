@@ -14,6 +14,8 @@ const solvesQuery = graphql(`
       actor
       solves {
         challenge {
+          id
+          name
           points
           solves
         }

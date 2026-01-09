@@ -419,6 +419,8 @@ export type GetAllSolvesQuery = {
       solvedAt: string;
       challenge: {
         __typename?: "CtfChallengeMetadata";
+        id: string;
+        name: string;
         points: number;
         solves: number;
       };
@@ -1132,6 +1134,14 @@ export const GetAllSolvesDocument = {
                         selectionSet: {
                           kind: "SelectionSet",
                           selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "id" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "name" },
+                            },
                             {
                               kind: "Field",
                               name: { kind: "Name", value: "points" },
