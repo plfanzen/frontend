@@ -1,3 +1,8 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
 enum ConnectionProtocol {
   TCP_TLS
   HTTPS
@@ -28,6 +33,8 @@ type CtfChallengeConnectionInfo {
   host: String!
   port: Int!
   protocol: ConnectionProtocol!
+  sshUsername: String
+  sshPassword: String
 }
 
 type CtfChallengeMetadata {
@@ -44,8 +51,7 @@ type CtfChallengeMetadata {
   canStart: Boolean!
   instance: InstanceStatus
   solved: Boolean!
-
-  # Whether the challenge source code can be exported by the user
+  "Whether the challenge source code can be exported by the user"
   canExport: Boolean!
   solves: Int!
 }
@@ -91,8 +97,7 @@ type Mutation {
   syncRepo: Boolean!
   launchChallengeInstance(challengeId: String!): Boolean!
   stopChallengeInstance(challengeId: String!): Boolean!
-
-  # Returns the ID of the solved challenge if the flag is correct, or null otherwise.
+  "Returns the ID of the solved challenge if the flag is correct, or null otherwise."
   submitFlag(challengeId: String!, flag: String!): String
   joinTeamWithCode(joinCodeInput: String!): Team!
   createTeam(name: String!, slug: String!, createJoinCode: Boolean!): Team!

@@ -66,6 +66,8 @@ const challsInfoQuery = graphql(`
           port
           host
           protocol
+          sshUsername
+          sshPassword
         }
       }
     }

@@ -99,6 +99,17 @@ ncat --ssl {{ info.host }} {{ info.port }}</pre
                 <pre v-else-if="info.protocol == ConnectionProtocol.Tcp">
 ncat {{ info.host }} {{ info.port }}</pre
                 >
+                <div
+                  v-else-if="
+                    info.protocol == ConnectionProtocol.Ssh &&
+                    info.sshUsername &&
+                    info.sshPassword
+                  "
+                >
+                <pre>ssh {{ info.sshUsername }}@{{ info.host }} -p {{ info.port }}
+Password: {{ info.sshPassword }}</pre>
+</div
+                >
                 <span v-else
                   >{{ info.protocol }}://{{ info.host }}:{{ info.port }}</span
                 >
@@ -220,6 +231,8 @@ const props = defineProps({
         port: number;
         host: string;
         protocol: ConnectionProtocol;
+        sshUsername?: string;
+        sshPassword?: string;
       }[];
     }>,
     optional: true,
@@ -362,12 +375,15 @@ const runtimeConfig = useRuntimeConfig();
 
 async function downloadSrc() {
   const token = await getToken();
-  const response = await fetch(`${runtimeConfig.public.browserApiBaseUrl}/export-challenge/${props.challengeId}`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await fetch(
+    `${runtimeConfig.public.browserApiBaseUrl}/export-challenge/${props.challengeId}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
   if (!response.ok) {
     alert("Failed to download source code.");
     return;
@@ -382,7 +398,6 @@ async function downloadSrc() {
   a.remove();
   window.URL.revokeObjectURL(url);
 }
-
 
 async function downloadAttachment(attachmentName: string) {
   const token = await getToken();

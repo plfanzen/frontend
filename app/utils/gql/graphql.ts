@@ -51,12 +51,15 @@ export type CtfChallengeConnectionInfo = {
   host: Scalars["String"]["output"];
   port: Scalars["Int"]["output"];
   protocol: ConnectionProtocol;
+  sshPassword?: Maybe<Scalars["String"]["output"]>;
+  sshUsername?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type CtfChallengeMetadata = {
   __typename?: "CtfChallengeMetadata";
   attachments: Array<Scalars["String"]["output"]>;
   authors: Array<Scalars["String"]["output"]>;
+  /** Whether the challenge source code can be exported by the user */
   canExport: Scalars["Boolean"]["output"];
   canStart: Scalars["Boolean"]["output"];
   categories: Array<Scalars["String"]["output"]>;
@@ -127,6 +130,7 @@ export type Mutation = {
   login: SessionCredentials;
   refreshSession: SessionCredentials;
   stopChallengeInstance: Scalars["Boolean"]["output"];
+  /** Returns the ID of the solved challenge if the flag is correct, or null otherwise. */
   submitFlag?: Maybe<Scalars["String"]["output"]>;
   syncRepo: Scalars["Boolean"]["output"];
 };
@@ -344,6 +348,8 @@ export type GetChallengesInfoQuery = {
         port: number;
         host: string;
         protocol: ConnectionProtocol;
+        sshUsername?: string | null;
+        sshPassword?: string | null;
       }>;
     } | null;
   }>;
@@ -814,6 +820,14 @@ export const GetChallengesInfoDocument = {
                             {
                               kind: "Field",
                               name: { kind: "Name", value: "protocol" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "sshUsername" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "sshPassword" },
                             },
                           ],
                         },
