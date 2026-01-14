@@ -94,7 +94,7 @@
                   >https://{{ info.host }}:{{ info.port }}</a
                 >
                 <pre v-else-if="info.protocol == ConnectionProtocol.TcpTls">
-ncat --ssl {{ info.host }} {{ info.port }}</pre
+ncat --ssl-verify {{ info.host }} {{ info.port }}</pre
                 >
                 <pre v-else-if="info.protocol == ConnectionProtocol.Tcp">
 ncat {{ info.host }} {{ info.port }}</pre
