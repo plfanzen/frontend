@@ -130,7 +130,8 @@ const categories = computed(() => {
           ? b.points - a.points
           : a.name.localeCompare(b.name)
       ) || [],
-    }));
+    }))
+    .toSorted((a, b) => a.name.localeCompare(b.name));
 });
 
 const interval = ref<null | number>(null);
