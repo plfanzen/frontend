@@ -37,6 +37,22 @@
 
     <template #body>
       <UNavigationMenu :items="items" orientation="vertical" />
+      <UButton
+        v-if="isLoggedIn"
+        @click="endSession"
+        class="mt-4 w-full md:hidden flex items-center justify-center"
+        icon="i-lucide-log-out"
+      >
+        Abmelden
+      </UButton>
+      <UButton
+        v-else
+        to="/hautpeingang"
+        class="mt-4 w-full md:hidden flex items-center justify-center"
+        icon="i-lucide-log-in"
+      >
+        Hautpeingang
+      </UButton>
     </template>
   </UHeader>
 </template>
