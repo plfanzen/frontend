@@ -174,38 +174,6 @@ onBeforeUnmount(() => {
 
 const route = useRoute();
 
-/*
-
-<header class="flex items-center w-full gap-4">
-      <NuxtLink to="/" class="flex items-center">
-        <img
-          src="~/assets/plfanzen.svg"
-          alt="Plfanzen Logo"
-          class="h-24 w-24 mr-4"
-        />
-        <h1 class="text-xl font-bold">
-          {{ eventInfo?.eventConfig.eventName || "Unnamed CTF" }}
-        </h1>
-      </NuxtLink>
-      <div class="ml-4 flex items-center gap-4 mr-4 text-lg w-full grow px-2">
-        <ULink to="/challenges" v-if="isLoggedIn">Heraufsorderungen</ULink>
-        <ULink to="/rules">Reglen</ULink>
-        <ULink to="/scoreboard">Puntkebertt</ULink>
-        <ULink to="/admin/sync" v-if="role === 'Author' || role === 'Admin'"
-          >Repository Sync</ULink
-        >
-        <ULink to="/profile" v-if="isLoggedIn">Mein Profil</ULink>
-        <ULink to="/hautpeingang" v-else>Hautpeingang</ULink>
-        <button
-          v-if="isLoggedIn"
-          @click="endSession"
-          class="text-gray-600 hover:text-gray-800"
-        >
-          Abmelden
-        </button>
-        <UColorModeButton />
-      </div>
-    </header>*/
 const items = computed<NavigationMenuItem[]>(() => {
   const base: NavigationMenuItem[] = [
     {
@@ -239,6 +207,11 @@ const items = computed<NavigationMenuItem[]>(() => {
             label: "Repository Sync",
             to: "/admin/sync",
             active: route.path.startsWith("/admin/sync"),
+          },
+          {
+            label: "Solves",
+            to: "/admin/solves",
+            active: route.path.startsWith("/admin/solves"),
           },
         ],
       });

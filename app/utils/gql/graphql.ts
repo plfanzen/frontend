@@ -303,6 +303,29 @@ export type EndSessionMutation = {
   endSession: boolean;
 };
 
+export type GetAllSubmittedFlagsQueryVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type GetAllSubmittedFlagsQuery = {
+  __typename?: "Query";
+  users: Array<{
+    __typename?: "User";
+    username: string;
+    actor: string;
+    solves: Array<{
+      __typename?: "Solve";
+      solvedAt: string;
+      submittedFlag: string;
+      challenge: {
+        __typename?: "CtfChallengeMetadata";
+        id: string;
+        name: string;
+      };
+    }>;
+  }>;
+};
+
 export type GetSyncStatusQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetSyncStatusQuery = {
@@ -719,6 +742,69 @@ export const EndSessionDocument = {
     },
   ],
 } as unknown as DocumentNode<EndSessionMutation, EndSessionMutationVariables>;
+export const GetAllSubmittedFlagsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "getAllSubmittedFlags" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "users" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "username" } },
+                { kind: "Field", name: { kind: "Name", value: "actor" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "solves" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "challenge" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "id" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "name" },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "solvedAt" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "submittedFlag" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetAllSubmittedFlagsQuery,
+  GetAllSubmittedFlagsQueryVariables
+>;
 export const GetSyncStatusDocument = {
   kind: "Document",
   definitions: [
