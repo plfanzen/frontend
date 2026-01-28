@@ -21,17 +21,12 @@
     "@graphql-codegen/typescript-vue-apollo": "^4.1.2",
     "@nuxt/fonts": "0.11.4",
     "@nuxt/icon": "1.15.0",
+    "@nuxt/ui": "^4.4.0",
     "@nuxtjs/mdc": "^0.19.2",
     "@nuxtjs/tailwindcss": "6.14.0",
-    "nuxt": "^4.0.0",
-    "reka-ui": "^2.3.2",
-    "roughjs": "=4.4.5",
-    "vue": "^3.5.17",
-    "vue-router": "^4.5.1",
-    "wired-elements": "^3.0.0-rc.6"
-  },
-  "resolutions": {
-    "roughjs": "=4.4.5"
+    "nuxt": "^4.3.0",
+    "vue": "^3.5.27",
+    "vue-router": "^4.5.1"
   },
   "devDependencies": {
     "@nirvati/nuxt-apollo": "^0.1.7",

@@ -5,38 +5,39 @@
       <h4>Log in to start plfanzing</h4>
     </hgroup>
     <form
-      class="flex items-center justify-center flex-col w-full max-w-sm"
+      class="flex items-center justify-center flex-col w-full max-w-md gap-4"
       @submit.prevent="login"
     >
-      <wired-input
-        placeholder="Your username"
-        class="w-full"
-        ref="usernameInput"
-        @keyup.enter.prevent="login"
-        autocomplete="username"
-      />
-      <wired-input
-        placeholder="Your password"
-        class="w-full"
-        type="password"
-        ref="passwordInput"
-        @keyup.enter.prevent="login"
-        autocomplete="current-password"
-      />
-      <wired-button @click.prevent="login" class="mt-4"> Log In </wired-button>
+      <UFormField label="Username">
+        <UInput
+          placeholder="Your username"
+          class="w-full"
+          v-model="username"
+          autocomplete="username"
+        />
+      </UFormField>
+      <UFormField label="Password">
+        <UInput
+          placeholder="Your password"
+          class="w-full"
+          type="password"
+          v-model="password"
+          autocomplete="current-password"
+        />
+      </UFormField>
+      <UButton @click.prevent="login" class="mt-4"> Log In </UButton>
     </form>
     <NuxtLink to="/register" class="mt-4 text-blue-600 hover:underline">
-      Don't have an account? Regitser here.
+      Don't have an account? Register here.
     </NuxtLink>
-    <img src="~/assets/ssl.png" alt="SSL Secured" class="mt-8 h-24" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { graphql } from "~/utils/gql";
 
-const usernameInput = ref<HTMLInputElement | null>(null);
-const passwordInput = ref<HTMLInputElement | null>(null);
+const username = ref("");
+const password = ref("");
 const refreshToken = useCookie("refreshToken");
 
 const loginMutation = graphql(`
@@ -54,8 +55,8 @@ const { onLogin } = useApollo();
 async function login() {
   try {
     const response = await loginMutate({
-      username: usernameInput.value?.value || "",
-      password: passwordInput.value?.value || "",
+      username: username.value || "",
+      password: password.value || "",
     });
     if (response?.data?.login.refreshToken) {
       onLogin(response.data.login.accessToken);

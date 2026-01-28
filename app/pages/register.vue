@@ -5,38 +5,40 @@
       <h4>Plfanz your account here</h4>
     </hgroup>
     <form
-      class="flex items-center justify-center flex-col w-full max-w-sm"
+      class="flex items-center justify-center flex-col w-full max-w-sm gap-4"
       @submit.prevent="createAccount"
     >
-      <wired-input
-        placeholder="Your username"
-        class="w-full"
-        ref="usernameInput"
-        @keyup.enter.prevent="createAccount"
-        autocomplete="username"
-      />
-      <wired-input
-        placeholder="Your email address"
-        class="w-full"
-        ref="emailInput"
-        type="email"
-        @keyup.enter.prevent="createAccount"
-        autocomplete="email"
-      />
-      <wired-input
-        placeholder="Your password"
-        class="w-full"
-        type="password"
-        ref="passwordInput"
-        @keyup.enter.prevent="createAccount"
-        autocomplete="new-password"
-      />
-      <wired-button @click.prevent="createAccount" class="mt-4"> Create account </wired-button>
+      <UFormField label="Username">
+        <UInput
+          placeholder="Your username"
+          class="w-full"
+          v-model="username"
+          autocomplete="username"
+        />
+      </UFormField>
+      <UFormField label="Email">
+        <UInput
+          placeholder="Your email address"
+          class="w-full"
+          v-model="email"
+          type="email"
+          autocomplete="email"
+        />
+      </UFormField>
+      <UFormField label="Password">
+        <UInput
+          placeholder="Your password"
+          class="w-full"
+          type="password"
+          v-model="password"
+          autocomplete="new-password"
+        />
+      </UFormField>
+      <UButton @click.prevent="createAccount"> Create account </UButton>
     </form>
     <NuxtLink to="/hautpeingang" class="mt-4 text-blue-600 hover:underline">
       Already have an account? Enter through the Hautpeingang.
     </NuxtLink>
-    <img src="~/assets/ssl.png" alt="SSL Secured" class="mt-8 h-24" />
   </div>
 </template>
 
@@ -45,9 +47,9 @@ import { graphql } from "~/utils/gql";
 
 const refreshToken = useCookie("refreshToken");
 
-const usernameInput = ref<HTMLInputElement | null>(null);
-const emailInput = ref<HTMLInputElement | null>(null);
-const passwordInput = ref<HTMLInputElement | null>(null);
+const username = ref("");
+const email = ref("");
+const password = ref("");
 
 const loginMutation = graphql(`
   mutation login($username: String!, $password: String!) {
@@ -69,25 +71,29 @@ const { mutate: registerMutate } = useMutation(registerMutation);
 const { onLogin } = useApollo();
 
 async function createAccount() {
-  if (!usernameInput?.value?.value || !emailInput.value?.value || !passwordInput.value?.value) {
+  if (
+    !username.value ||
+    !email.value ||
+    !password.value
+  ) {
     alert("Please fill in all fields.");
     return;
   }
   try {
     const resp = await registerMutate({
-      username: usernameInput.value?.value || "",
-      email: emailInput.value?.value || "",
-      password: passwordInput.value?.value || "",
+      username: username.value,
+      email: email.value,
+      password: password.value,
     });
     console.log("Account creation successful:", resp);
   } catch (error) {
     alert("Account creation failed: " + error);
   }
-  
+
   try {
     const response = await loginMutate({
-      username: usernameInput.value?.value || "",
-      password: passwordInput.value?.value || "",
+      username: username.value,
+      password: password.value,
     });
     if (response?.data?.login.refreshToken) {
       onLogin(response.data.login.accessToken);
@@ -98,6 +104,6 @@ async function createAccount() {
     await navigateTo("/");
   } catch (error) {
     alert("Login failed: " + error);
-  } 
+  }
 }
 </script>

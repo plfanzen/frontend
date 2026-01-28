@@ -1,20 +1,17 @@
 <template>
   <div class="flex flex-col p-4">
-    <ClientOnly>
-      <wired-checkbox @change="handleCheckboxChange">
-        Hide Solved Challenges
-      </wired-checkbox>
-    </ClientOnly>
+    <UCheckbox v-model="hideSolved" label="Hide Solved Challenges" />
     <div v-if="categories.length === 0" class="mt-8 text-center text-gray-600">
       <span v-if="hideSolved && hasSolved"
-        >All challenges solved! Congratulations!</span>
+        >All challenges solved! Congratulations!</span
+      >
       <span v-else>No challenges available at the moment.</span>
     </div>
     <div v-for="category in categories" :key="category.id" class="mb-8">
       <h3 class="text-2xl font-bold mb-4" :style="{ color: category.color }">
         {{ category.name }}
       </h3>
-      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+      <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-4">
         <Challenge
           v-for="challenge in category.challenges"
           :challengeId="challenge.id"
@@ -31,7 +28,7 @@
           :attachments="challenge.attachments"
           :canExport="challenge.canExport"
           :canStart="challenge.canStart"
-          class="max-w-sm"
+          class="max-w-sm h-full"
           @launch="refresh"
           @stop="refresh"
         />
@@ -94,7 +91,7 @@ const shownChallenges = computed(() => {
 
   if (hideSolved.value) {
     return challsInfo.value.challenges.filter(
-      (challenge: any) => !challenge.solved
+      (challenge: any) => !challenge.solved,
     );
   }
   return challsInfo.value.challenges;
@@ -103,9 +100,7 @@ const shownChallenges = computed(() => {
 const hasSolved = computed(() => {
   if (!challsInfo.value) return false;
 
-  return challsInfo.value.challenges.some(
-    (challenge: any) => challenge.solved
-  );
+  return challsInfo.value.challenges.some((challenge: any) => challenge.solved);
 });
 
 const categories = computed(() => {
@@ -125,11 +120,12 @@ const categories = computed(() => {
     .filter((cat: any) => (challengesByCategory[cat.id]?.length || 0) > 0)
     .map((cat: any) => ({
       ...cat,
-      challenges: challengesByCategory[cat.id]?.toSorted((a, b) =>
-        a.points !== b.points
-          ? b.points - a.points
-          : a.name.localeCompare(b.name)
-      ) || [],
+      challenges:
+        challengesByCategory[cat.id]?.toSorted((a, b) =>
+          a.points !== b.points
+            ? b.points - a.points
+            : a.name.localeCompare(b.name),
+        ) || [],
     }))
     .toSorted((a, b) => a.name.localeCompare(b.name));
 });
@@ -154,8 +150,4 @@ const difficultiesMap = computed(() => {
   });
   return map;
 });
-
-function handleCheckboxChange(newVal: any) {
-  hideSolved.value = newVal?.detail.checked;
-}
 </script>
