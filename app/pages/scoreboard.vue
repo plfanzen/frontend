@@ -10,7 +10,7 @@
       <template #rank-cell="{ row }">
         <div class="flex items-center gap-2">
           <UBadge
-            v-if="row.index === 0"
+            v-if="row.original.rank === 1"
             color="warning"
             variant="subtle"
             class="font-bold"
@@ -18,7 +18,7 @@
             🥇
           </UBadge>
           <UBadge
-            v-else-if="row.index === 1"
+            v-else-if="row.original.rank === 2"
             color="neutral"
             variant="subtle"
             class="font-bold"
@@ -26,14 +26,14 @@
             🥈
           </UBadge>
           <UBadge
-            v-else-if="row.index === 2"
+            v-else-if="row.original.rank === 3"
             color="primary"
             variant="subtle"
             class="font-bold"
           >
             🥉
           </UBadge>
-          <span v-else class="font-semibold">{{ row.index + 1 }}</span>
+          <span v-else class="font-semibold">{{ row.original.rank }}</span>
         </div>
       </template>
 
@@ -78,12 +78,13 @@ type ScoreboardEntry = {
   totalPoints: number;
   solveCount: number;
   lastSolve: string | null;
+  rank: number;
 };
 
 const scoreboardData = computed(() => {
   if (!solvesInfo.value) return [];
 
-  const result: Record<string, ScoreboardEntry> = {};
+  const result: Record<string, Omit<ScoreboardEntry, 'rank'>> = {};
   
   for (const user of solvesInfo.value.users) {
     if (!result[user.actor]) {
@@ -106,7 +107,7 @@ const scoreboardData = computed(() => {
     }
   }
   
-  return Object.values(result).sort((a, b) => {
+  const sorted = Object.values(result).sort((a, b) => {
     if (b.totalPoints !== a.totalPoints) {
       return b.totalPoints - a.totalPoints;
     }
@@ -114,6 +115,20 @@ const scoreboardData = computed(() => {
     if (!b.lastSolve) return -1;
     return new Date(a.lastSolve).getTime() - new Date(b.lastSolve).getTime();
   });
+
+  // Assign ranks with proper tie handling
+  let currentRank = 1;
+  const withRanks: ScoreboardEntry[] = sorted.map((entry, index) => {
+    if (index > 0 && entry.totalPoints < sorted[index - 1].totalPoints) {
+      currentRank = index + 1;
+    }
+    return {
+      ...entry,
+      rank: currentRank
+    };
+  });
+
+  return withRanks;
 });
 
 const columns: TableColumn<ScoreboardEntry>[] = [
