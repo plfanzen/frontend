@@ -95,23 +95,30 @@
                     class="underline"
                     >https://{{ info.host }}:{{ info.port }}</a
                   >
-                  <pre v-else-if="info.protocol == ConnectionProtocol.TcpTls">
-ncat --ssl-verify {{ info.host }} {{ info.port }}</pre
-                  >
-                  <pre v-else-if="info.protocol == ConnectionProtocol.Tcp">
-ncat {{ info.host }} {{ info.port }}</pre
-                  >
+                  <InputCopy
+                    v-else-if="info.protocol == ConnectionProtocol.TcpTls"
+                    :value="`ncat --ssl-verify ${info.host} ${info.port}`"
+                  />
+                  <InputCopy
+                    v-else-if="info.protocol == ConnectionProtocol.Tcp"
+                    :value="`ncat ${info.host} ${info.port}`"
+                  />
+
                   <div
                     v-else-if="
                       info.protocol == ConnectionProtocol.Ssh &&
                       info.sshUsername &&
                       info.sshPassword
                     "
+                    class="flex gap-2 flex-col"
                   >
-                    <pre>
-ssh {{ info.sshUsername }}@{{ info.host }} -p {{ info.port }}
-Password: {{ info.sshPassword }}</pre
-                    >
+                    <InputCopy
+                      :value="`ssh ${info.sshUsername}@${info.host} -p ${info.port}`"
+                    />
+                    <div class="flex flex-row items-center justify-center mt-1 gap-2">
+                      <span class="text-sm font-semibold">SSH Password:</span>
+                      <InputCopy :value="info.sshPassword" />
+                    </div>
                   </div>
                   <span v-else
                     >{{ info.protocol }}://{{ info.host }}:{{ info.port }}</span
