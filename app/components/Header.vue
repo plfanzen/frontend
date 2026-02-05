@@ -213,6 +213,11 @@ const items = computed<NavigationMenuItem[]>(() => {
             to: "/admin/solves",
             active: route.path.startsWith("/admin/solves"),
           },
+          {
+            label: "Invalid Flags",
+            to: "/admin/invalid-flags",
+            active: route.path.startsWith("/admin/invalid-flags"),
+          }
         ],
       });
     }

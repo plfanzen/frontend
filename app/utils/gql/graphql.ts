@@ -30,6 +30,18 @@ export type Scalars = {
   Float: { input: number; output: number };
 };
 
+export type CaptchaChallenge = {
+  __typename?: "CaptchaChallenge";
+  challenge: Scalars["String"]["output"];
+  providerType: CaptchaProviderType;
+};
+
+export enum CaptchaProviderType {
+  Altcha = "ALTCHA",
+  Cap = "CAP",
+  Dummy = "DUMMY",
+}
+
 export enum ConnectionProtocol {
   Https = "HTTPS",
   Ssh = "SSH",
@@ -59,7 +71,6 @@ export type CtfChallengeMetadata = {
   __typename?: "CtfChallengeMetadata";
   attachments: Array<Scalars["String"]["output"]>;
   authors: Array<Scalars["String"]["output"]>;
-  /** Whether the challenge source code can be exported by the user */
   canExport: Scalars["Boolean"]["output"];
   canStart: Scalars["Boolean"]["output"];
   categories: Array<Scalars["String"]["output"]>;
@@ -111,6 +122,7 @@ export type InstanceStatus = {
 
 export type InvalidSubmission = {
   __typename?: "InvalidSubmission";
+  challenge: CtfChallengeMetadata;
   challengeId: Scalars["String"]["output"];
   submittedAt: Scalars["String"]["output"];
   submittedFlag: Scalars["String"]["output"];
@@ -130,7 +142,6 @@ export type Mutation = {
   login: SessionCredentials;
   refreshSession: SessionCredentials;
   stopChallengeInstance: Scalars["Boolean"]["output"];
-  /** Returns the ID of the solved challenge if the flag is correct, or null otherwise. */
   submitFlag?: Maybe<Scalars["String"]["output"]>;
   syncRepo: Scalars["Boolean"]["output"];
 };
@@ -142,6 +153,8 @@ export type MutationCreateTeamArgs = {
 };
 
 export type MutationCreateUserArgs = {
+  captchaChallenge?: InputMaybe<Scalars["String"]["input"]>;
+  captchaResponse?: InputMaybe<Scalars["String"]["input"]>;
   email: Scalars["String"]["input"];
   password: Scalars["String"]["input"];
   username: Scalars["String"]["input"];
@@ -179,6 +192,7 @@ export type MutationSubmitFlagArgs = {
 
 export type Query = {
   __typename?: "Query";
+  captcha: CaptchaChallenge;
   challenges: Array<CtfChallengeMetadata>;
   eventConfig: EventConfig;
   isAuthenticated: Scalars["Boolean"]["output"];
@@ -301,6 +315,27 @@ export type EndSessionMutationVariables = Exact<{
 export type EndSessionMutation = {
   __typename?: "Mutation";
   endSession: boolean;
+};
+
+export type GetAllInvalidFlagsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetAllInvalidFlagsQuery = {
+  __typename?: "Query";
+  users: Array<{
+    __typename?: "User";
+    username: string;
+    actor: string;
+    invalidSubmissions: Array<{
+      __typename?: "InvalidSubmission";
+      submittedFlag: string;
+      submittedAt: string;
+      challenge: {
+        __typename?: "CtfChallengeMetadata";
+        id: string;
+        name: string;
+      };
+    }>;
+  }>;
 };
 
 export type GetAllSubmittedFlagsQueryVariables = Exact<{
@@ -742,6 +777,69 @@ export const EndSessionDocument = {
     },
   ],
 } as unknown as DocumentNode<EndSessionMutation, EndSessionMutationVariables>;
+export const GetAllInvalidFlagsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "getAllInvalidFlags" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "users" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "username" } },
+                { kind: "Field", name: { kind: "Name", value: "actor" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "invalidSubmissions" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "challenge" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "id" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "name" },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "submittedFlag" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "submittedAt" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetAllInvalidFlagsQuery,
+  GetAllInvalidFlagsQueryVariables
+>;
 export const GetAllSubmittedFlagsDocument = {
   kind: "Document",
   definitions: [

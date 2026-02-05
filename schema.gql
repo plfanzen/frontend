@@ -1,6 +1,7 @@
-schema {
-  query: Query
-  mutation: Mutation
+enum CaptchaProviderType {
+  ALTCHA
+  CAP
+  DUMMY
 }
 
 enum ConnectionProtocol {
@@ -20,6 +21,11 @@ enum UserRole {
   PLAYER
   AUTHOR
   ADMIN
+}
+
+type CaptchaChallenge {
+  providerType: CaptchaProviderType!
+  challenge: String!
 }
 
 type CtfCategory {
@@ -51,7 +57,8 @@ type CtfChallengeMetadata {
   canStart: Boolean!
   instance: InstanceStatus
   solved: Boolean!
-  "Whether the challenge source code can be exported by the user"
+
+  # Whether the challenge source code can be exported by the user
   canExport: Boolean!
   solves: Int!
 }
@@ -87,17 +94,25 @@ type InvalidSubmission {
   submittedFlag: String!
   submittedAt: String!
   user: User!
+  challenge: CtfChallengeMetadata!
 }
 
 type Mutation {
   login(username: String!, password: String!): SessionCredentials!
-  createUser(username: String!, email: String!, password: String!): Boolean!
+  createUser(
+    username: String!
+    email: String!
+    password: String!
+    captchaChallenge: String
+    captchaResponse: String
+  ): Boolean!
   refreshSession(refreshToken: String!): SessionCredentials!
   endSession(refreshToken: String!): Boolean!
   syncRepo: Boolean!
   launchChallengeInstance(challengeId: String!): Boolean!
   stopChallengeInstance(challengeId: String!): Boolean!
-  "Returns the ID of the solved challenge if the flag is correct, or null otherwise."
+
+  # Returns the ID of the solved challenge if the flag is correct, or null otherwise.
   submitFlag(challengeId: String!, flag: String!): String
   joinTeamWithCode(joinCodeInput: String!): Team!
   createTeam(name: String!, slug: String!, createJoinCode: Boolean!): Team!
@@ -116,6 +131,7 @@ type Query {
   userById(userId: String!): User
   solves: [Solve!]!
   teams: [Team!]!
+  captcha: CaptchaChallenge!
 }
 
 type SessionCredentials {

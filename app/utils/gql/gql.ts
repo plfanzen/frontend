@@ -20,6 +20,7 @@ type Documents = {
   "\n  query getBasicEventInfo {\n    eventConfig {\n      eventName\n    }\n  }\n": typeof types.GetBasicEventInfoDocument;
   "\n  mutation refreshSession($refreshToken: String!) {\n    refreshSession(refreshToken: $refreshToken) {\n      accessToken\n      refreshToken\n    }\n  }\n": typeof types.RefreshSessionDocument;
   "\n  mutation endSession($refreshToken: String!) {\n    endSession(refreshToken: $refreshToken)\n  }\n": typeof types.EndSessionDocument;
+  "\n  query getAllInvalidFlags {\n    users {\n      username\n      actor\n      invalidSubmissions {\n        challenge {\n          id\n          name\n        }\n        submittedFlag\n        submittedAt\n      }\n    }\n  }\n": typeof types.GetAllInvalidFlagsDocument;
   "\n  query getAllSubmittedFlags {\n    users {\n      username\n      actor\n      solves {\n        challenge {\n          id\n          name\n        }\n        solvedAt\n        submittedFlag\n      }\n    }\n  }\n": typeof types.GetAllSubmittedFlagsDocument;
   "\n  query getSyncStatus {\n    syncStatus {\n      commitHash\n      commitTimestamp\n      commitAuthor\n      commitTitle\n      isSynced\n    }\n  }\n": typeof types.GetSyncStatusDocument;
   "\n  mutation syncRepo {\n    syncRepo\n  }\n": typeof types.SyncRepoDocument;
@@ -43,6 +44,8 @@ const documents: Documents = {
     types.RefreshSessionDocument,
   "\n  mutation endSession($refreshToken: String!) {\n    endSession(refreshToken: $refreshToken)\n  }\n":
     types.EndSessionDocument,
+  "\n  query getAllInvalidFlags {\n    users {\n      username\n      actor\n      invalidSubmissions {\n        challenge {\n          id\n          name\n        }\n        submittedFlag\n        submittedAt\n      }\n    }\n  }\n":
+    types.GetAllInvalidFlagsDocument,
   "\n  query getAllSubmittedFlags {\n    users {\n      username\n      actor\n      solves {\n        challenge {\n          id\n          name\n        }\n        solvedAt\n        submittedFlag\n      }\n    }\n  }\n":
     types.GetAllSubmittedFlagsDocument,
   "\n  query getSyncStatus {\n    syncStatus {\n      commitHash\n      commitTimestamp\n      commitAuthor\n      commitTitle\n      isSynced\n    }\n  }\n":
@@ -112,6 +115,12 @@ export function graphql(
 export function graphql(
   source: "\n  mutation endSession($refreshToken: String!) {\n    endSession(refreshToken: $refreshToken)\n  }\n",
 ): (typeof documents)["\n  mutation endSession($refreshToken: String!) {\n    endSession(refreshToken: $refreshToken)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: "\n  query getAllInvalidFlags {\n    users {\n      username\n      actor\n      invalidSubmissions {\n        challenge {\n          id\n          name\n        }\n        submittedFlag\n        submittedAt\n      }\n    }\n  }\n",
+): (typeof documents)["\n  query getAllInvalidFlags {\n    users {\n      username\n      actor\n      invalidSubmissions {\n        challenge {\n          id\n          name\n        }\n        submittedFlag\n        submittedAt\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
