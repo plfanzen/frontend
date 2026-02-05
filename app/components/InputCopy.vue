@@ -9,7 +9,7 @@
     <template #trailing>
       <UIcon
         name="i-heroicons-document-duplicate"
-        class="size-5 cursor-pointer"
+        class="size-5 cursor-pointer text-black dark:text-white"
         @click="copyText()"
       />
     </template>
